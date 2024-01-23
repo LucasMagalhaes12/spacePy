@@ -13,13 +13,20 @@ class Draw():
 
     def multiWords(self, screen,  optionsAndPos:dict, color=(255, 255, 255)):
         for name in optionsAndPos:
+            print(name)
             renderText = self.fontTextOptions.render(name, True, color)
             screen.blit(renderText, optionsAndPos[name])
     
 
-    def singleWord(self, screen, name, pos:tuple, color=(255, 255, 255)):
+    def title(self, screen, name, position:tuple, incrementX:int=0, incrementY:int=0,color=(255, 255, 255)):
         renderText = self.fontTextTitles.render(name, True, color)
-        screen.blit(renderText, pos)
+        screen.blit(renderText, (position[0] + incrementX, position[1] + incrementY))
+
+
+    def selectionsNames(self, screen, names:tuple, indexName:int, position:tuple, incrementX:int=0, incrementY:int=0, color:tuple=(255, 255, 255)):
+        renderText = self.fontTextOptions.render(names[indexName], True, color)
+        screen.blit(renderText, (position[0] + incrementX, position[1] + incrementY))
+
 
     def image(self, screen, image, position:tuple):
         screen.blit(image, position)
