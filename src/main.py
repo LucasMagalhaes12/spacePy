@@ -1,7 +1,7 @@
 
 from controls import Controls
-# from text import *
 from draw import Draw
+from selection import Selection
 # from namesAndPositions import NamesAndPositions
 
 import pygame
@@ -10,9 +10,11 @@ from random import randint
 pygame.init()
 
 # currentScreenResolution = pygame.display.Info().current_w, pygame.display.Info().current_h
-currentScreenResolution = (640, 480)
+currentResolution = "1920x1080"
 #criar arquivo de configuração
-screen = pygame.display.set_mode(currentScreenResolution)
+resolutions = {"640x480":(640, 480), "1366x768":(1366, 768), "1920x1080":(1920, 1080)}
+stateWindow = {"Window":False, "Full Screen":pygame.FULLSCREEN}
+screen = pygame.display.set_mode(resolutions["640x480"], stateWindow["Window"])
 pygame.display.set_caption('Shooter')
 clock = pygame.time.Clock()
 
@@ -20,52 +22,76 @@ clock = pygame.time.Clock()
 
 
 
-controls = Controls()
-# text = Text()
-draw = Draw()
+#Positions Names
 namesPositionsMenu = {'Start':(50, 50), 'Options':(50, 100), 'Exit':(50, 200)}
 namesPositionsConfiguration = {'Resolution':(50, 50), 'Language':(50, 100), 'Back':(50, 200)}
+namesPositionsConfigurarionResolution = {}
+
+#Images
+backgroundMenu = pygame.image.load("res/backgroundMenu.png")
+selectionImage = pygame.image.load("res/selection.png")
+
+controls = Controls()
+draw = Draw()
+
+selectionMenu = Selection()
+selectionMenu.updatePositions(tuple(namesPositionsMenu.values()))
+
+selectionConfiguration = Selection()
+selectionConfiguration.updatePositions(tuple(namesPositionsConfiguration.values()))
+
+selectionImage = pygame.transform.scale(selectionImage, (80, 25))
+
 # if currentScreenResolution != (1920, 1080):
 #     print("transform")
-#     backgroundMenu = pygame.transform.scale(backgroundMenu, currentScreenResolution)
-
+    # backgroundMenu = pygame.transform.scale(backgroundMenu, currentScreenResolution)
 
 def game():
     print("Gamer")
     pass
 
 
+
 def configuration():
-    print(configuration)
     runningConfig = True
-    draw.resetPositionRect()
+    selectionConfiguration.resetPositionRect()
     while runningConfig:
         clock.tick(60)
         controls.update()
-        runningConfig = not controls.updates["QUIT"]
-        print(draw.contPositionRect, controls.updates)
+        runningConfig = not controls.keys["QUIT"]
+        print(selectionConfiguration.showCurrentPosition(), selectionConfiguration.showContPosition(), controls.keys)
         
-        if controls.updates["UP"]:
-            draw.previusPositionRect()
-            controls.updates["UP"] = False
+        if controls.keyStatus("UP"):
+            selectionConfiguration.moveSelection(-1)
+            controls.setKey("UP", False)
 
-        elif controls.updates["DOWN"]:
-            draw.nextPositionRect()
-            controls.updates["DOWN"] = False
+        elif controls.keyStatus("DOWN"):
+            selectionConfiguration.moveSelection(1)
+            controls.setKey("DOWN", False)
 
-        if controls.updates["ACTION"]:
-            result = tuple(namesPositionsConfiguration.keys())[draw.contPositionRect]
-            if  result == "Back":
+        
+        if controls.keyStatus("RIGHT"):
+            pass
+
+        elif controls.keyStatus("LEFT"):
+            pass
+
+        if controls.keyStatus("ACTION"):
+            if  selectionConfiguration.showContPosition() == 2:
                 runningConfig = False
-                controls.updates["ACTION"] = False
+                controls.setKey("ACTION", False)
             
 
         screen.fill(pygame.Color('black'))
         # draw.backgroundMenu(screen)
-        draw.textTitle(screen, "Configuration", (currentScreenResolution[0]/2-60, 20))
-        draw.textOptions(screen, namesPositionsConfiguration)
-        draw.rect(screen, tuple(namesPositionsConfiguration.values()))
+        draw.singleWord(screen, "Configuration", (resolutions[currentResolution][0]/2-60, 20))
+        # draw.singleWord(screen, )
+        draw.multiWords(screen, namesPositionsConfiguration)
+        draw.image(screen, selectionImage, (selectionConfiguration.showCurrentPosition()[0]-5, selectionConfiguration.showCurrentPosition()[1]-5))
         pygame.display.update()
+
+
+menu = True
 
 
 def mainMenu():
@@ -73,32 +99,35 @@ def mainMenu():
     while running:
         clock.tick(60)
         controls.update()
-        running = not controls.updates["QUIT"]
-        print(draw.contPositionRect, controls.updates)
+        running = not controls.keys["QUIT"]
         
-        if controls.updates["UP"]:
-            draw.previusPositionRect()
-            controls.updates["UP"] = False
+        print(selectionMenu.showCurrentPosition(), selectionMenu.showContPosition(), controls.keys)
+        if controls.keys["UP"]:
+            selectionMenu.moveSelection(-1)
+            controls.keys["UP"] = False
 
-        elif controls.updates["DOWN"]:
-            draw.nextPositionRect()
-            controls.updates["DOWN"] = False
+        elif controls.keys["DOWN"]:
+            selectionMenu.moveSelection(1)
+            controls.keys["DOWN"] = False
 
-        if controls.updates["ACTION"]:
-            result = tuple(namesPositionsMenu.keys())[draw.contPositionRect]
-            if  result == "Start":
+        if controls.keys["ACTION"]:
+            if selectionMenu.showContPosition() == 0:
                 game()
-            elif  result == "Options":
-                configuration()
-                draw.resetPositionRect()
-            elif result == "Exit":
-                controls.updates["QUIT"] = True
             
+            elif selectionMenu.showContPosition() == 1:
+                configuration()
+                selectionMenu.resetPositionRect()
+            
+            elif selectionMenu.showContPosition() == 2:
+                controls.keys["QUIT"] = True
 
-        # screen.fill(pygame.Color('black'))
-        draw.backgroundMenu(screen)
-        draw.textOptions(screen, namesPositionsMenu)
-        draw.rect(screen, tuple(namesPositionsMenu.values()))
+        # screen.fill(pygame.Color('black')) 
+        
+        draw.background(screen, backgroundMenu)
+        draw.multiWords(screen, namesPositionsMenu)
+        print(selectionMenu.showCurrentPosition(), selectionMenu.showContPosition())
+        draw.image(screen, selectionImage, (selectionMenu.showCurrentPosition()[0]-5, selectionMenu.showCurrentPosition()[1]-5))
+
         pygame.display.update()
 
 
