@@ -33,8 +33,14 @@ class NamesandPositions():
         return self._length
     
 
-    def updatePositions(self):
-        self._dictionary
+    def updatePositions(self, currentResolution):
+        
+        for names in self.dictionary:
+            posX = self.dictionary[names][0]
+            posY = self.dictionary[names][1]
+            newPosX = posX
+            newPosY = posY
+            self.dictionary[names] = (newPosX, newPosY)
 
         for i in self._dictionary:
             print(i)
@@ -42,3 +48,7 @@ class NamesandPositions():
         # self._values = tuple(self._dictionary.values())
         # self._keys = tuple(self._dictionary.keys())
         # self._length = len(self._values)
+            
+    
+    def updateLanguage(self, dict):
+        pass

@@ -3,6 +3,7 @@ from controls import Controls
 from draw import Draw
 from selection import Selection
 from namesandPositions import NamesandPositions
+from texts import Text
 from window import Window
 # from namesAndPositions import NamesAndPositions
 
@@ -28,13 +29,35 @@ clock = pygame.time.Clock()
 window = Window(CURRENTRESOLUTION)
 window.updateResolution(screen, CURRENTRESOLUTION, False)
 
-#Positions Names
-namesMenu = NamesandPositions({'Start':(50, 50), 'Options':(50, 100), '[ Exit ]':(50, 200)})
-namesConfig = NamesandPositions({'Screen':(50, 80), 'Resolution:':(50, 130), 'Language:':(50, 180), 'Accept':(50, 230), '[ Back ]':(50, 400)})
-namesWindow = NamesandPositions({"< Full Screen >":(150, 80), "< Window >":(0, 0)})
+
+language = {
+
+    "PTBR":{
+        "Menu":{'Iniciar':(50, 50), 'Opções':(50, 100), '[ Sair ]':(50, 200)},
+        "Config":{'Tela':(50, 80), 'Resolução:':(50, 130), 'Linguagem:':(50, 180), 'Aceitar':(50, 230), '[ Voltar ]':(50, 400)},
+        "Window":{"< Tela Cheia >":(150, 80), "<    Janela    >":(0, 0)},
+        "Resolutions":{"< 1920 x 1080 >":(150, 130), "< 1366 x 768   >":(0, 0), "<   640 x 480   >":(0, 0)},
+        "langSelection":{"<    Inglês    >":(150, 180), "< Português  >":(0, 0)}
+    },
+
+    "EN":{
+        "Menu":{'Start':(50, 50), 'Options':(50, 100), '[ Exit ]':(50, 200)},
+        "Config":{'Screen':(50, 80), 'Resolution:':(50, 130), 'Language:':(50, 180), 'Accept':(50, 230), '[ Back ]':(50, 400)},
+        "Window":{"< Full Screen >":(150, 80), "<    Window    >":(0, 0)},
+        "Resolutions":{"< 1920 x 1080 >":(150, 130), "< 1366 x 768   >":(0, 0), "<   640 x 480   >":(0, 0)},
+        "langSelection":{"<    English    >":(150, 180), "< Portugues  >":(0, 0)}
+    }
+}
+
+
+namesMenu= NamesandPositions(language["PTBR"]["Menu"])
+namesConfig = NamesandPositions(language["PTBR"]["Config"])
+namesWindow = NamesandPositions(language["PTBR"]["Window"])
 resolutions = (1920, 1080), (1366, 768), (640, 480)
-namesResolution = NamesandPositions({"< 1920x1080 >":(150, 130), "< 1366x768 >":(0, 0), "< 640x480 >":(0, 0)})
-namesLanguage = NamesandPositions({"< English >":(150, 180), "< Portugues >":(0, 0)})
+namesResolution = NamesandPositions(language["PTBR"]["Resolutions"])
+namesLanguage = NamesandPositions(language["PTBR"]["langSelection"])
+
+text = Text(language["PTBR"])
 
 #Images
 backgroundMenu = pygame.image.load("res/backgroundMenu.png")
@@ -48,7 +71,6 @@ selectionConfiguration = Selection(namesConfig.showLength())
 selectionWindow = Selection(namesWindow.showLength())
 selectionResolution = Selection(namesResolution.showLength())
 selectionLanguage = Selection(namesLanguage.showLength())
-
 
 selectionImage = pygame.transform.scale(selectionImage, (80, 25))
 
@@ -65,7 +87,7 @@ def configuration():
         clock.tick(60)
         controls.update()
         runningConfig = not controls.keys["QUIT"]
-        # print(namesConfig.showPos(selectionConfiguration.showCont()), selectionConfiguration.showCont(), controls.keys)
+        print(namesConfig.showPos(selectionConfiguration.showCont()), selectionConfiguration.showCont(), controls.keys)
         
         if controls.keyStatus("UP"):
             selectionConfiguration.moveSelection(PREVIUS)
@@ -104,6 +126,7 @@ def configuration():
         if controls.keyStatus("ACTION"):
             if selectionConfiguration.showCont() == 3:
                 window.updateResolution(screen, resolutions[selectionResolution.showCont()], not selectionWindow.showCont())
+                
 
             if  selectionConfiguration.showCont() == 4:
                 runningConfig = False
@@ -129,7 +152,7 @@ def mainMenu():
         clock.tick(60)
         controls.update()
         running = not controls.keys["QUIT"]
-        # print(namesMenu.showPos(selectionMenu.showCont()), selectionMenu.showCont(), controls.keys)
+        print(namesMenu.showPos(selectionMenu.showCont()), selectionMenu.showCont(), controls.keys)
         if controls.keys["UP"]:
             selectionMenu.moveSelection(PREVIUS)
             controls.keys["UP"] = False
