@@ -15,6 +15,6 @@ class Window():
 
     def margin(self, percentMargin:int=50):
         result = (self.currentResolution[0] * percentMargin) // 1080
-        print(result)
+        # print(result)
         return result
     
