@@ -1,6 +1,6 @@
 import pygame
 
-class Text:
+class Names:
     def __init__(self, currentLanguage:dict):
         self.allLanguages = {
             "PTBR":{
