@@ -13,8 +13,7 @@ class Window():
         1 = 1366x768
         2 = 640x480
         """
-        print(type(self.resolutions), self.resolutions)
-        self.currentResolution = self.resolutions[1]
+        self.currentResolution = self.resolutions[newResolution]
         if isFullScreen:
             screen = pygame.display.set_mode(self.currentResolution, pygame.FULLSCREEN)
         else:
@@ -26,3 +25,6 @@ class Window():
         # print(result)
         return result
     
+
+    def returnCurrentResolution(self):
+        return self.currentResolution

@@ -1,8 +1,9 @@
 import pygame
 
 class Selections:
-    def __init__(self):
-
+    def __init__(self, size:tuple):
+        self.skinSelection = pygame.image.load("res/selection.png")
+        self.skinSelection = pygame.transform.scale(self.skinSelection, size)
         # MENU : [currentPosition, moveLimit]
         self.selections = {
             "menu":[0, 3],
@@ -11,7 +12,7 @@ class Selections:
             "resolutions":[0, 3],
             "lang":[0, 2]
         }
-        
+
 
     def moveSelection(self, menu:str, move:int):
         """
@@ -35,6 +36,9 @@ class Selections:
         return int(self.selections[menu][0])
 
 
-    # def showCurrentPosition(self):
-    #     if (len(self.positions) > 0):
-    #         return self.positions[self.contPosition]
+    def skin(self):
+        return self.skinSelection
+    
+
+    def updateSkin(self, size:tuple):
+        self.skinSelection = pygame.transform.scale(self.skinSelection, size)
