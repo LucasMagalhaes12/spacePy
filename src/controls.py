@@ -6,25 +6,39 @@ class Controls():
     ["Quit", "UP", "Down", "Left", "Right", "Action"]
     """
     def __init__(self):
-        self.keys = {"QUIT":False, "UP":False, "DOWN":False, "LEFT":False, "RIGHT":False, "ACTION":False}
-        self.configKeys = {"QUIT":pygame.K_ESCAPE, "UP":pygame.K_w, "DOWN":pygame.K_s, "LEFT":pygame.K_a, "RIGHT":pygame.K_d, "ACTION":pygame.K_SPACE}
+        self._keys = {"UP":False, "DOWN":False, "LEFT":False, "RIGHT":False, "ACTION":False, "QUIT":False}
+        self._configKeys = {"UP":pygame.K_w, "DOWN":pygame.K_s, "LEFT":pygame.K_a, "RIGHT":pygame.K_d, "ACTION":pygame.K_SPACE, "QUIT":pygame.K_ESCAPE}
     
     def update(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                self.keys["QUIT"] = True
+                self._keys["QUIT"] = True
             if event.type == pygame.KEYDOWN:
-                for keyPressed in self.configKeys:
-                    if event.key == self.configKeys[keyPressed]:
-                        self.keys[keyPressed] = True
+                for keyPressed in self._configKeys:
+                    if event.key == self._configKeys[keyPressed]:
+                        self._keys[keyPressed] = True
             
             if event.type == pygame.KEYUP:
-                for keyPressed in self.configKeys:
-                    if event.key == self.configKeys[keyPressed]:
-                        self.keys[keyPressed] = False
+                for keyPressed in self._configKeys:
+                    if event.key == self._configKeys[keyPressed]:
+                        self._keys[keyPressed] = False
+
 
     def keyStatus(self, key:str):
-        return self.keys[key]
-    
+        """
+        Return state Key:
+        key = UP, DOWN, LEFT, RIGHT, ACTION, QUIT or ALL(Return all keys)
+        """
+        if key == "ALL":
+            return tuple(self._keys.values())
+        return self._keys[key]
+
+
     def setKey(self, key:str, setStatus:bool):
-        self.keys[key] = setStatus
+        if key == "ALL":
+            self._keys["UP"] = setStatus
+            self._keys["DOWN"] = setStatus
+            self._keys["LEFT"] = setStatus
+            self._keys["RIGHT"] = setStatus
+        self._keys[key] = setStatus
+        

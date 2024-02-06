@@ -1,0 +1,45 @@
+import pygame
+
+UP = 1
+DOWN = 2
+LEFT = 3
+RIGHT = 4
+
+class Rocket:
+    def __init__(self):
+        self._skin = [pygame.image.load("res/planeUp.png"),\
+                          pygame.image.load("res/planeDown.png"),\
+                          pygame.image.load("res/planeLeft.png"),\
+                          pygame.image.load("res/planeRight.png")]
+        
+        for i, image in enumerate(self._skin):
+            self._skin[i] = pygame.transform.scale(image, (100, 100))
+
+        self._position = [200, 380]
+        self._SPEED = 10
+
+    def skin(self):
+        return self._skin
+    
+
+    
+    def update(self, move:tuple, screenSize):
+        """
+        move = (UP, DOWN, LEFT, RIGHT)
+        """
+        if move[0] and self._position[1] > 0:
+            self._position[1] -= self._SPEED
+
+        if move[1] and self._position[1] < screenSize[1] - self._skin[0].get_height():
+            self._position[1] += self._SPEED
+
+        if move[2] and self._position[0] > 0:
+            self._position[0] -= self._SPEED
+        
+        if move[3] and self._position[0] < screenSize[0] - self._skin[0]. get_width():
+            self._position[0] += self._SPEED
+
+
+    def position(self):
+        return self._position
+    

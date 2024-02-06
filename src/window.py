@@ -1,9 +1,16 @@
 import pygame
 
 class Window():
-    def __init__(self, currentResolution:tuple):
-        self.currentResolution = currentResolution
-        self.resolutions = (1920, 1080), (1366, 768), (640, 480)
+    def __init__(self, screen, resolutionSelection:int, isFullScreen:bool=False):
+        """
+        Select Resolution:
+        0 = 1920x1080
+        1 = 1366x768
+        2 = 640x480
+        """
+        self._resolutions = (1920, 1080), (1366, 768), (640, 480)
+        self._currentResolution = self._resolutions[resolutionSelection]
+        self.updateResolution(screen, resolutionSelection, isFullScreen)
 
 
     def updateResolution(self, screen, newResolution:int, isFullScreen:bool=True):
@@ -13,18 +20,18 @@ class Window():
         1 = 1366x768
         2 = 640x480
         """
-        self.currentResolution = self.resolutions[newResolution]
+        self._currentResolution = self._resolutions[newResolution]
         if isFullScreen:
-            screen = pygame.display.set_mode(self.currentResolution, pygame.FULLSCREEN)
+            screen = pygame.display.set_mode(self._currentResolution, pygame.FULLSCREEN)
         else:
-            screen = pygame.display.set_mode(self.currentResolution)
+            screen = pygame.display.set_mode(self._currentResolution)
 
 
     def margin(self, percentMargin:int=50):
-        result = (self.currentResolution[0] * percentMargin) // 1080
+        result = (self._currentResolution[0] * percentMargin) // 1080
         # print(result)
         return result
     
 
-    def returnCurrentResolution(self):
-        return self.currentResolution
+    def resolution(self):
+        return self._currentResolution

@@ -4,29 +4,26 @@ from draw import Draw
 from selections import Selections
 from names import Names
 from window import Window
-
+from rocket import Rocket
+from bullets import Bullets
+from enemys import Enemys
 
 import pygame
 from random import randint
 
-pygame.init()
 
 NEXT = 1
 PREVIUS = -1
-WINDOW = False
-FULLSCREEN = pygame.FULLSCREEN
 
-# currentScreenResolution = pygame.display.Info().current_w, pygame.display.Info().current_h
-CURRENTRESOLUTION = (1366, 768)
+CURRENTRESOLUTION = (640, 480)
 
+pygame.init()
 #criar arquivo de configuração
-resolutions = {"640x480":(640, 480), "1366x768":(1366, 768), "1920x1080":(1920, 1080)}
 screen = pygame.display.set_mode()
 pygame.display.set_caption('Shooter')
 clock = pygame.time.Clock()
 
-window = Window(CURRENTRESOLUTION)
-window.updateResolution(screen, 0, False)
+window = Window(screen, 1)
 
 currentLanguage = "PTBR"
 names = Names(currentLanguage)
@@ -34,9 +31,11 @@ names = Names(currentLanguage)
 
 #Images
 backgroundMenu = pygame.image.load("res/backgroundMenu.png")
-backgroundMenu = pygame.transform.scale(backgroundMenu, window.returnCurrentResolution())
+backgroundMenu = pygame.transform.scale(backgroundMenu, window.resolution())
 
-
+rocket = Rocket()
+enemys = Enemys()
+bullets = Bullets()
 selections = Selections((100, 25))
 controls = Controls()
 draw = Draw()
@@ -47,9 +46,25 @@ def game():
     while runningConfig:
         clock.tick(60)
         controls.update()
-        runningConfig = not controls.keys["QUIT"]
+        runningConfig = not controls._keys["QUIT"]
         
+        rocket.update(controls.keyStatus("ALL")[:4], window.resolution())
+        enemys.new(window.resolution())
+        enemys.update(window.resolution())
+        # bullets.acellesration(controls.keyStatus("UP"), controls.keyStatus("DOWN"))
+        bullets.new((rocket.position()[0], rocket.position()[1]+20))
+        bullets.new((rocket.position()[0]+80, rocket.position()[1]+20))
+        bullets.update()
+        # print(controls.keyStatus("ALL")[:4], plane.pos())
+        # controls.setKey("ALL", False)
+
+
         screen.fill(pygame.Color('black'))
+        for bulletPos in bullets.positions():
+            draw.image(screen, bullets.skin(), bulletPos)
+        for enemyPos in enemys.positions():
+            draw.image(screen, enemys.skin()[0], enemyPos)
+        draw.image(screen, rocket.skin()[0], rocket.position())
         pygame.display.update()
 
 
@@ -58,9 +73,10 @@ def configuration():
     selections.resetPos("configuration")
     while runningConfig:
         clock.tick(60)
-        
+
         # Draw Configuration
-        print(selections.pos("configuration"), selections.pos("configuration"), controls.keys)
+        # print(selections.pos("configuration"), selections.pos("configuration"), controls._keys)
+              
         screen.fill(pygame.Color('black'))
         draw.title(screen, ("Configuration", (300, 20)))
         draw.multiWords(screen, names.items("config"))
@@ -68,13 +84,12 @@ def configuration():
         draw.name(screen, names.items("window")[selections.pos("window")])
         draw.name(screen, names.items("resolutions")[selections.pos("resolutions")])
         draw.name(screen, names.items("langSelection")[selections.pos("lang")])
- 
         draw.image(screen, selections.skin(), (names.positions("config")[selections.pos("configuration")][0]-5, names.positions("config")[selections.pos("configuration")][1]-5))
         pygame.display.update()
 
         # Controls
         controls.update()
-        runningConfig = not controls.keys["QUIT"]
+        runningConfig = not controls._keys["QUIT"]
         
         if controls.keyStatus("UP"):
             selections.moveSelection("configuration", PREVIUS)
@@ -115,7 +130,7 @@ def configuration():
             if selections.pos("configuration") == 3:
                 window.updateResolution(screen, selections.pos("resolutions"), not selections.pos("window"))
                 global backgroundMenu
-                backgroundMenu = pygame.transform.scale(backgroundMenu, window.returnCurrentResolution())
+                backgroundMenu = pygame.transform.scale(backgroundMenu, window.resolution())
 
             if  selections.pos("configuration") == 4:
                 runningConfig = False
@@ -129,17 +144,17 @@ def mainMenu():
     while running:
         clock.tick(60)
         controls.update()
-        running = not controls.keys["QUIT"]
+        running = not controls._keys["QUIT"]
         # print(names.names("menu")[selections.pos("menu")], selections.pos("menu"), controls.keys)
-        if controls.keys["UP"]:
+        if controls._keys["UP"]:
             selections.moveSelection("menu", PREVIUS)
-            controls.keys["UP"] = False
+            controls._keys["UP"] = False
 
-        elif controls.keys["DOWN"]:
+        elif controls._keys["DOWN"]:
             selections.moveSelection("menu", NEXT)
-            controls.keys["DOWN"] = False
+            controls._keys["DOWN"] = False
 
-        if controls.keys["ACTION"]:
+        if controls._keys["ACTION"]:
             if selections.pos("menu") == 0:
                 game()
                 selections.resetPos("menu")
@@ -149,7 +164,7 @@ def mainMenu():
                 selections.resetPos("menu")
             
             elif selections.pos("menu") == 2:
-                controls.keys["QUIT"] = True
+                controls._keys["QUIT"] = True
 
         draw.image(screen, backgroundMenu, (0, 0))
         draw.image(screen, selections.skin(), (names.positions("menu")[selections.pos("menu")][0]-5, names.positions("menu")[selections.pos("menu")][1]-5))
