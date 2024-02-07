@@ -2,6 +2,7 @@ import pygame
 
 class Window():
     def __init__(self, screen, resolutionSelection:int, isFullScreen:bool=False):
+        ## TODO Melhorar o Input do resolution Selection
         """
         Select Resolution:
         0 = 1920x1080

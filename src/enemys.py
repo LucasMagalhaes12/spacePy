@@ -9,7 +9,7 @@ class Enemys:
         
         self._positions = []
         self._SPEED = 6
-        self._timeCreation = 30
+        self._density = 150 
         self._time = 0
         self._isCreation = False
 
@@ -24,12 +24,12 @@ class Enemys:
     def update(self, screenSize):
         # print(self._positions)
         self._time += 1
-        self._time %= 1 + self._timeCreation
-        self._isCreation = True if self._time == self._timeCreation else False
+        self._time %= 1 + self._density
+        self._isCreation = True if self._time == self._density else False
 
         for i, position in enumerate(self._positions):
             self._positions[i][1] += self._SPEED
-            if position[1] > screenSize[1] - self._skin[0].get_height():
+            if position[1] > screenSize[1] + self._skin[0].get_height():
                 self._positions.pop(i)
 
 

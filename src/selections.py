@@ -13,6 +13,9 @@ class Selections:
             "lang":[0, 2]
         }
 
+        self.NEXT = 1
+        self.PREVIUS = -1
+
 
     def moveSelection(self, menu:str, move:int):
         """
