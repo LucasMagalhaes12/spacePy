@@ -8,6 +8,8 @@ from rocket import Rocket
 from bullets import Bullets
 from enemys import Enemys
 from particles import Particles
+from collision import collision
+from powerUps import PowerUps
 
 import pygame
 from random import randint
@@ -37,38 +39,63 @@ bullets = Bullets()
 selections = Selections((100, 25))
 controls = Controls()
 draw = Draw()
+powerUps = PowerUps()
 particles = Particles()
 
 def game():
+    particles.splash(window.resolution())
     runningGame = True
     while runningGame:
         clock.tick(60)
         controls.update()
-        
         runningGame = not controls._keys["QUIT"]
-        rocket.update(controls.keyStatus("ALL")[:4], window.resolution())   
+
+        bullets.new(rocket.position(incrementY=35), rocket.position(40, 20), rocket.position(80, 35))
         enemys.new(window.resolution())
         particles.new(window.resolution())
-        # bullets.acellesration(controls.keyStatus("UP"), controls.keyStatus("DOWN"))
-        bullets.new(rocket.position(incrementY=20))
-        bullets.new(rocket.position(incrementX=80, incrementY=20))
-        enemys.update(window.resolution())
+        
+        rocket.update(controls.keyStatus("ALL")[:4], window.resolution())   
         bullets.update()
+        enemys.update(window.resolution())
         particles.update(window.resolution())
-        # controls.setKey("ALL", False)
+        powerUps.update(window.resolution())
+        
 
-        bullets.setSpeed(1)
+        for enemyIndex, enemyPos in enumerate(enemys.positions()):
+            for bulletIndex, bulletPos in enumerate(bullets.positions()):
+                if collision(enemyPos, enemys.size(), bulletPos, bullets.size()): 
+                    enemys.pop(enemyIndex)
+                    bullets.pop(bulletIndex)
+
+
+        for powerupIndex, powerupsPos in enumerate(powerUps.positions()):
+            if collision(powerupsPos, powerUps.size(), rocket.position(), rocket.size()):
+                bullets.set(powerupsPos[2])
+                powerUps.pop(powerupIndex)
+            
+
         screen.fill(pygame.Color('black'))
+        
         for bulletPos in bullets.positions():
             draw.image(screen, bullets.skin(), bulletPos)
+            # draw.name(screen, draw.FONTOPTIONS, (str(bulletPos), bulletPos), 10, 5)
 
         for enemyPos in enemys.positions():
             draw.image(screen, enemys.skin()[0], enemyPos)
+            # draw.name(screen, draw.FONTOPTIONS, (str(enemyPos), enemyPos), 15, -10)
 
         for particlesPos in particles.positions():
             draw.image(screen, particles.skin(), particlesPos)
 
+        for powerupsPos in powerUps.positions():
+            draw.image(screen, powerUps.skin(powerupsPos[2]), powerupsPos)
+
         draw.image(screen, rocket.skin()[0], rocket.position())
+
+        # draw.name(screen, draw.FONTOPTIONS, ("enemys: "+ str(len(enemys.positions())), (200, 10)))
+        # draw.name(screen, draw.FONTOPTIONS, ("bullets: " + str(len(bullets.positions())), (400, 10)))
+        # draw.name(screen, draw.FONTOPTIONS, (str(int(clock.get_fps())), (10, 10)))
+
         pygame.display.update()
 
 

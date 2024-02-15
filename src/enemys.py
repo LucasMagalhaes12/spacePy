@@ -9,30 +9,37 @@ class Enemys:
         
         self._positions = []
         self._SPEED = 6
-        self._density = 150 
-        self._time = 0
+        self._density = 60
+        self._step = 0
         self._isCreation = False
-
-    def skin(self):
-        return self._skin
     
 
     def new(self, screenSize):
-        if self._isCreation:
+        self._step += 1
+        self._step %= self._density
+        if self._step == 0:
             self._positions.append([randint(0, screenSize[0] - self._skin[0].get_width()), -self._skin[0].get_height()])
     
-    def update(self, screenSize):
-        # print(self._positions)
-        self._time += 1
-        self._time %= 1 + self._density
-        self._isCreation = True if self._time == self._density else False
 
+    def update(self, screenSize):
         for i, position in enumerate(self._positions):
             self._positions[i][1] += self._SPEED
             if position[1] > screenSize[1] + self._skin[0].get_height():
                 self._positions.pop(i)
 
 
-
     def positions(self):
         return self._positions
+
+    
+    def size(self):
+        return self._skin[0].get_size()
+    
+
+    def skin(self):
+        return self._skin
+
+
+    def pop(self, index:int):
+        if len(self._positions) != 0 and len(self._positions) > index:
+            self._positions.pop(index)

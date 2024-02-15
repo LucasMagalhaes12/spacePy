@@ -18,11 +18,7 @@ class Rocket:
         self._position = [200, 380]
         self._SPEED = 10
 
-    def skin(self):
-        return self._skin
-    
-
-    
+   
     def update(self, move:tuple, screenSize):
         ## TODO Ajeitar movimentação diagonal, e movimentações de lados opostos, aceleração no movimento
         """
@@ -44,3 +40,10 @@ class Rocket:
     def position(self, incrementX:int=0, incrementY:int=0):
         return self._position[0] + incrementX, self._position[1] + incrementY
     
+
+    def size(self):
+        return self._skin[0].get_size()
+
+
+    def skin(self):
+        return self._skin
