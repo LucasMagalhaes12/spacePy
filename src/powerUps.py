@@ -10,33 +10,30 @@ class PowerUps:
         
         for i, image in enumerate(self._skins):
             self._skins[i] = pygame.transform.scale(image, (40, 40))
-        self._lucky = 100
         self._SPEED = 5
         self._positions = []
+        self._density = 300
+        self._lucky = 300
 
+        self._timeCreation = 0
+
+        self._duration = 0
+        self.LIMITDURATION = 400
         self.SPEED2x = 0
         self.SPEED3x = 1
         self.TRIPLESHOOT = 2
         self.OVERPOWER = 3
 
 
-    def new(self, screenSize:tuple):
-            self._positions.append([randint(0, screenSize[0] - self._skins[0].get_width()), -self._skins[0].get_height()])
- 
-
     def update(self, screenSize:tuple):
-        sorted = randint(0, self._lucky)
-        if 1 == sorted:
-            self._positions.append([randint(0, screenSize[0] - self._skins[0].get_width()), -self._skins[0].get_height(), randint(0, 3)])
-            # if 1 == randint(0, self._lucky//3):
-            #     self._positions.append([randint(0, screenSize[0] - self._skins[0].get_width()), -self._skins[0].get_height(), self.SPEED2x])
-            # elif 1 == sorted % 50:
-            #     self._positions.append([randint(0, screenSize[0] - self._skins[0].get_width()), -self._skins[0].get_height(), self.SPEED3x])
-            # elif 1 == sorted % 10:
-            #     self._positions.append([randint(0, screenSize[0] - self._skins[0].get_width()), -self._skins[0].get_height(), self.TRIPLESHOOT])
-            # else:
-            #     self._positions.append([randint(0, screenSize[0] - self._skins[0].get_width()), -self._skins[0].get_height(), self.OVERPOWER])
-        
+        if self._timeCreation == 0:
+            sorted = randint(0, self._lucky)
+            if sorted == 0:
+                self._positions.append([randint(0, screenSize[0] - self._skins[0].get_width()), -self._skins[0].get_height(), randint(0, 3)])
+                self._timeCreation = self._density
+        else:
+            if self._timeCreation > 0:
+                self._timeCreation -= 1
 
         for i, position in enumerate(self._positions):
             self._positions[i][1] += self._SPEED
@@ -55,6 +52,20 @@ class PowerUps:
         return self._skins[0].get_size()
     
 
-    def pop(self, index:int):
+    def take(self, index:int):
+        self._duration = self.LIMITDURATION
         if len(self._positions) != 0 and len(self._positions) > index:
             self._positions.pop(index)
+
+
+    def duration(self):
+        return self._duration
+
+
+    def isWithPowerUP(self):
+        if self._duration == 0:
+            return False
+        if self._duration > 0:
+            self._duration -= 1
+        return True
+        

@@ -1,24 +1,18 @@
-
 from controls import Controls
 from draw import Draw
 from selections import Selections
 from names import Names
 from window import Window
 from rocket import Rocket
-from bullets import Bullets
+from laser import Laser
 from enemys import Enemys
 from particles import Particles
 from collision import collision
 from powerUps import PowerUps
+from lifes import Lifes
 
 import pygame
 from random import randint
-"""
-> Documentar cada função
-> criar sprites de outros inimigos
-> adicionar animação de fogo
-> Criar arquivo de configuração
-"""
 
 pygame.init()
 screen = pygame.display.set_mode()
@@ -28,19 +22,19 @@ clock = pygame.time.Clock()
 window = Window(screen, 1)
 names = Names("PTBR")
 
-
-#Images
 backgroundMenu = pygame.image.load("res/backgroundMenu.png")
 backgroundMenu = pygame.transform.scale(backgroundMenu, window.resolution())
 
-rocket = Rocket()
+rocket = Rocket(window.resolution())
 enemys = Enemys()
-bullets = Bullets()
-selections = Selections((100, 25))
+lasers = Laser()
+selections = Selections()
 controls = Controls()
 draw = Draw()
 powerUps = PowerUps()
 particles = Particles()
+lifes = Lifes()
+
 
 def game():
     particles.splash(window.resolution())
@@ -48,53 +42,65 @@ def game():
     while runningGame:
         clock.tick(60)
         controls.update()
-        runningGame = not controls._keys["QUIT"]
+        runningGame = not controls.keyStatus()["QUIT"]
 
-        bullets.new(rocket.position(incrementY=35), rocket.position(40, 20), rocket.position(80, 35))
-        enemys.new(window.resolution())
-        particles.new(window.resolution())
-        
-        rocket.update(controls.keyStatus("ALL")[:4], window.resolution())   
-        bullets.update()
+        lasers.update(rocket.position(incrementX=6, incrementY=35), rocket.position(45, 20), rocket.position(85, 35))
         enemys.update(window.resolution())
         particles.update(window.resolution())
+        rocket.update(controls.keyStatus(), window.resolution())
         powerUps.update(window.resolution())
+        lifes.update(window.resolution())
         
-
         for enemyIndex, enemyPos in enumerate(enemys.positions()):
-            for bulletIndex, bulletPos in enumerate(bullets.positions()):
-                if collision(enemyPos, enemys.size(), bulletPos, bullets.size()): 
+            for bulletIndex, bulletPos in enumerate(lasers.positions()):
+                if collision(enemyPos, enemys.size(), bulletPos, lasers.size()): 
                     enemys.pop(enemyIndex)
-                    bullets.pop(bulletIndex)
+                    lasers.pop(bulletIndex)
+            if collision(enemyPos, enemys.size(), rocket.position(), rocket.size()):
+                enemys.pop(enemyIndex)
+                lifes.set(lifes.LOSELIFE)
 
 
         for powerupIndex, powerupsPos in enumerate(powerUps.positions()):
             if collision(powerupsPos, powerUps.size(), rocket.position(), rocket.size()):
-                bullets.set(powerupsPos[2])
-                powerUps.pop(powerupIndex)
-            
+                lasers.set(powerupsPos[2])
+                powerUps.take(powerupIndex)
+        
+
+        for lifesIndex, lifesPos in enumerate(lifes.positions()):
+            if collision(lifesPos, lifes.size(), rocket.position(), rocket.size()):
+                lifes.pop(lifesIndex)
+                lifes.set(lifes.WINLIFE)
+
 
         screen.fill(pygame.Color('black'))
+        draw.name(screen, draw.FONTTITLE, names.items("game")[0])
+        draw.name(screen, draw.FONTTITLE, (str(lifes.lifes()), names.items("game")[0][1]), 70)
         
-        for bulletPos in bullets.positions():
-            draw.image(screen, bullets.skin(), bulletPos)
-            # draw.name(screen, draw.FONTOPTIONS, (str(bulletPos), bulletPos), 10, 5)
+
+        for bulletPos in lasers.positions():
+            draw.image(screen, lasers.skin(), bulletPos)      
 
         for enemyPos in enemys.positions():
-            draw.image(screen, enemys.skin()[0], enemyPos)
-            # draw.name(screen, draw.FONTOPTIONS, (str(enemyPos), enemyPos), 15, -10)
-
+            draw.image(screen, enemys.skin(), enemyPos)
+            
         for particlesPos in particles.positions():
             draw.image(screen, particles.skin(), particlesPos)
 
         for powerupsPos in powerUps.positions():
             draw.image(screen, powerUps.skin(powerupsPos[2]), powerupsPos)
 
-        draw.image(screen, rocket.skin()[0], rocket.position())
+        for lifesPos in lifes.positions():
+            draw.image(screen, lifes.skin(), lifesPos)
 
-        # draw.name(screen, draw.FONTOPTIONS, ("enemys: "+ str(len(enemys.positions())), (200, 10)))
-        # draw.name(screen, draw.FONTOPTIONS, ("bullets: " + str(len(bullets.positions())), (400, 10)))
-        # draw.name(screen, draw.FONTOPTIONS, (str(int(clock.get_fps())), (10, 10)))
+        draw.image(screen, rocket.skin(), rocket.position())
+
+        if powerUps.isWithPowerUP():
+            rect = (20, window.resolution()[1] - 40, 150, 20)
+            porcent = (rect[2] - rect[0]) * powerUps.duration() // powerUps.LIMITDURATION
+            draw.bar(screen, rect, porcent)
+        else:
+            lasers.set(lasers.NORMAL)
 
         pygame.display.update()
 
@@ -104,9 +110,6 @@ def configuration():
     selections.resetPos("configuration")
     while runningConfig:
         clock.tick(60)
-
-        # Draw Configuration
-        # print(selections.pos("configuration"), selections.pos("configuration"), controls._keys)
               
         screen.fill(pygame.Color('black'))
         draw.name(screen, draw.FONTTITLE, ("Configuration", (300, 20)))
@@ -114,14 +117,13 @@ def configuration():
         
         draw.name(screen, draw.FONTOPTIONS, names.items("window")[selections.pos("window")])
         draw.name(screen, draw.FONTOPTIONS, names.items("resolutions")[selections.pos("resolutions")])
-        draw.name(screen, draw.FONTOPTIONS, names.items("langSelection")[selections.pos("lang")])
+        draw.name(screen, draw.FONTOPTIONS, names.items("langSelection")[selections.pos("language")])
         draw.image(screen, selections.skin(), (names.positions("config")[selections.pos("configuration")][0]-5, names.positions("config")[selections.pos("configuration")][1]-5))
         pygame.display.update()
 
-        # Controls
         controls.update()
         runningConfig = not controls._keys["QUIT"]
-        ## TODO Melhorar esses inputs 
+
         if controls.keyStatus("UP"):
             selections.moveSelection("configuration", selections.PREVIUS)
             controls.setKey("UP", False)
@@ -149,17 +151,22 @@ def configuration():
 
             elif selections.pos("configuration") == 2:
                 if controls.keyStatus("LEFT"):
-                    selections.moveSelection("lang", selections.PREVIUS)
+                    selections.moveSelection("language", selections.PREVIUS)
                     controls.setKey("LEFT", False)
 
                 elif controls.keyStatus("RIGHT"):
-                    selections.moveSelection("lang", selections.NEXT)
+                    selections.moveSelection("language", selections.NEXT)
                     controls.setKey("RIGHT", False)
 
 
         if controls.keyStatus("ACTION"):
             if selections.pos("configuration") == 3:
                 window.updateResolution(screen, selections.pos("resolutions"), not selections.pos("window"))
+                rocket.updateScreenSize(window.resolution())
+                if selections.pos("language") == 0:
+                    names.set("EN")
+                if selections.pos("language") == 1:
+                    names.set("PTBR")
                 global backgroundMenu
                 backgroundMenu = pygame.transform.scale(backgroundMenu, window.resolution())
 
@@ -167,8 +174,6 @@ def configuration():
                 runningConfig = False
                 controls.setKey("ACTION", False)
             
-        
-
 
 def mainMenu():
     running = True
@@ -176,7 +181,6 @@ def mainMenu():
         clock.tick(60)
         controls.update()
         running = not controls._keys["QUIT"]
-        # print(names.names("menu")[selections.pos("menu")], selections.pos("menu"), controls.keys)
 
         draw.image(screen, backgroundMenu, (0, 0))
         draw.image(screen, selections.skin(), (names.positions("menu")[selections.pos("menu")][0]-5, names.positions("menu")[selections.pos("menu")][1]-5))
@@ -191,7 +195,6 @@ def mainMenu():
             controls._keys["DOWN"] = False
 
         if controls._keys["ACTION"]:
-            ## TODO Definir o que significa o "0".
             if selections.pos("menu") == 0:
                 game()
                 selections.resetPos("menu")

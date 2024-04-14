@@ -1,14 +1,13 @@
 import pygame
 
 
-class Bullets:
+class Laser:
     def __init__(self):
-        self._skin = pygame.image.load("res/bullet.png")
-        self._skin = pygame.transform.scale(self._skin, (20, 25))
+        self._skin = pygame.image.load("res/laser.png")
+        self._skin = pygame.transform.scale(self._skin, (10, 25))
         self._positions = []
         self._SPEED = 11
         self._sumSpeed = 0
-
         self._density = 30
         self._step = 0
         
@@ -20,7 +19,7 @@ class Bullets:
         self.NORMAL = 4
 
 
-    def new(self, posLeftBullets:tuple, posCenterBullets:tuple, posRightBullets:tuple):
+    def update(self,posLeftBullets:tuple, posCenterBullets:tuple, posRightBullets:tuple):
         self._step += 1
         self._step %= self._density
         if self._step == 0:
@@ -28,9 +27,7 @@ class Bullets:
                 self._positions.append(list(posCenterBullets))
             self._positions.append(list(posLeftBullets))
             self._positions.append(list(posRightBullets))
-
-
-    def update(self):      
+           
         for i, position in enumerate(self._positions):
             self._positions[i][1] -= self._SPEED + self._sumSpeed
             if position[1] < -self._skin.get_height():
@@ -79,22 +76,3 @@ class Bullets:
             
             case _:
                 pass
-
-
-    # def acelleration(self, UP, DOWN):
-    #     if UP:
-    #         for i, position in enumerate(self._positions):
-    #             self._positions[i][1] += self._SPEED
-    #     if DOWN:
-    #         for i, position in enumerate(self._positions):
-    #             self._positions[i][1] -= self._SPEED
-
-    
-    # def set(self, setSpeed:int):
-    #     """
-    #     Select Speed:
-    #         1 = Normal Speed
-    #         2 = 2x Speed
-    #         3 = 3x Speed
-    #     """
-    #     self._timeCreation = self._auxTimeCreation // setSpeed

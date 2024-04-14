@@ -1,49 +1,79 @@
 import pygame
 
-UP = 1
-DOWN = 2
-LEFT = 3
-RIGHT = 4
 
 class Rocket:
-    def __init__(self):
-        self._skin = [pygame.image.load("res/planeUp.png"),\
-                          pygame.image.load("res/planeDown.png"),\
-                          pygame.image.load("res/planeLeft.png"),\
-                          pygame.image.load("res/planeRight.png")]
+    def __init__(self, screenSize):
+        self._skin = pygame.image.load("res/rocket.png")
+        self._skin = pygame.transform.scale(self._skin, (110, 100))
         
-        for i, image in enumerate(self._skin):
-            self._skin[i] = pygame.transform.scale(image, (100, 100))
-
-        self._position = [200, 380]
-        self._SPEED = 10
+        self._position = {'x':screenSize[0]//2-self._skin.get_width()//2, 'y':screenSize[1]//2+self._skin.get_height()}
+        self._MAXSPEED = 15
+        self._INCREMENTSPEED = 1
+        self._speed = 3
+        self._limitWidth = screenSize[0] - self._skin. get_width()
+        self._limitHeigth = screenSize[1] - self._skin.get_height()
 
    
-    def update(self, move:tuple, screenSize):
-        ## TODO Ajeitar movimentação diagonal, e movimentações de lados opostos, aceleração no movimento
+    def update(self, keysPresseds:dict, screenSize):
         """
-        move = (UP, DOWN, LEFT, RIGHT)
+        Update rocket with buttons presseds
         """
-        if move[0] and self._position[1] > 0:
-            self._position[1] -= self._SPEED
+        if (keysPresseds["UP"] or keysPresseds["DOWN"]) and (keysPresseds["LEFT"] or keysPresseds["RIGHT"]):
+            self._speed = self._MAXSPEED // 2 + 3
 
-        if move[1] and self._position[1] < screenSize[1] - self._skin[0].get_height():
-            self._position[1] += self._SPEED
-
-        if move[2] and self._position[0] > 0:
-            self._position[0] -= self._SPEED
+        else:
+            if True in keysPresseds.values() and self._speed < self._MAXSPEED:
+                self._speed += self._INCREMENTSPEED
+            elif self._speed > 3:
+                self._speed -= self._INCREMENTSPEED
         
-        if move[3] and self._position[0] < screenSize[0] - self._skin[0]. get_width():
-            self._position[0] += self._SPEED
+        if keysPresseds["UP"]:
+            if self._position['y'] - self._speed > 0:
+                self._position['y'] -= self._speed
+            else:
+                 self._position['y'] = 0
+
+        if keysPresseds["DOWN"]:
+            if self._position['y'] < self._limitHeigth:
+                self._position['y'] += self._speed
+            else:
+                self._position['y'] = self._limitHeigth
+        
+        if keysPresseds["LEFT"]:
+            if self._position['x'] - self._speed > 0:
+                self._position['x'] -= self._speed
+            else:
+                self._position['x'] = 0
+        
+        if keysPresseds["RIGHT"]:
+            if self._position['x'] < self._limitWidth:
+                self._position['x'] += self._speed
+            else:
+                self._position['x'] = self._limitWidth
 
 
     def position(self, incrementX:int=0, incrementY:int=0):
-        return self._position[0] + incrementX, self._position[1] + incrementY
+        """
+        Returns the position of the rocket
+        """
+        return self._position['x'] + incrementX, self._position['y'] + incrementY
     
 
     def size(self):
-        return self._skin[0].get_size()
+        """
+        Returns the size of the rocket
+        """
+        return self._skin.get_size()
+
+
+    def updateScreenSize(self, screenSize):
+        self._position = {'x':screenSize[0]//2-self._skin.get_width()//2, 'y':screenSize[1]//2+self._skin.get_height()}
+        self._limitWidth = screenSize[0] - self._skin. get_width()
+        self._limitHeigth = screenSize[1] - self._skin.get_height()
 
 
     def skin(self):
+        """
+        Returns the skin of the rocket
+        """
         return self._skin
