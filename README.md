@@ -9,4 +9,4 @@ Desenvolver este jogo foi uma experiência desafiadora e que rendeu muitos apren
 
 No futuro, pretendo expandir este projeto adicionando novos recursos, como diferentes tipos de inimigos com barra de danos, animações, efeitos sonoros e um sistema de pontuação. Este jogo não só me ensinou as bases fundamentais do desenvolvimento de jogos, mas também me incentivou a buscar novos desafios e aprimorar minhas habilidades como desenvolvedor.
 
-![Gameplay](spacepy.GIF)
+![Gameplay](res/spacepy.GIF)
