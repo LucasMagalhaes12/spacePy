@@ -8,7 +8,7 @@ Neste jogo, o jogador assume uma nave espacial encarregada de se defender contra
 
 ## Para Executar o game:
 
-### Linux ambiente virtual python:
+### No Linux com ambiente virtual python:
 
     # Instalar a venv python:
     sudo apt install python3-venv
