@@ -51,7 +51,7 @@ class Enemys:
         return self._size["SIZE"]
     
 
-    def skin(self):
+    def get_skin(self):
         """
         Return enemy skin.
         """

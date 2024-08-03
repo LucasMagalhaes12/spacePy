@@ -4,7 +4,7 @@ class Selections:
     def __init__(self):
         self._skinSelection = pygame.image.load("res/selection.png")
         self._skinSelection = pygame.transform.scale(self._skinSelection, (100, 25))
-        self.selections = {
+        self._selections = {
             "menu":[0, 3],
             "configuration":[0, 5],
             "window":[0, 2],
@@ -23,24 +23,24 @@ class Selections:
         Previus = -1
         """
         if move > 0:
-            self.selections[menu][0] += 1
+            self._selections[menu][0] += 1
         if move < 0:
-            self.selections[menu][0] -= 1
+            self._selections[menu][0] -= 1
 
-        self.selections[menu][0] %= self.selections[menu][1]
+        self._selections[menu][0] %= self._selections[menu][1]
         
 
     def resetPos(self, menu:str):
-        self.selections[menu][0] = 0
+        self._selections[menu][0] = 0
 
 
-    def pos(self, menu):
-        return int(self.selections[menu][0])
+    def get_pos(self, menu):
+        return int(self._selections[menu][0])
 
 
-    def skin(self):
+    def get_skin(self):
         return self._skinSelection
     
 
-    def updateSkin(self, size:tuple):
+    def set_size(self, size:tuple):
         self._skinSelection = pygame.transform.scale(self._skinSelection, size)

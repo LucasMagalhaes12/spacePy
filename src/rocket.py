@@ -14,7 +14,7 @@ class Rocket:
         self._limitHeigth = screenSize[1] - self._skin.get_height()
 
    
-    def update(self, keysPresseds:dict, screenSize):
+    def update(self, keysPresseds:dict):
         """
         Update rocket with buttons presseds
         """
@@ -52,27 +52,30 @@ class Rocket:
                 self._position['x'] = self._limitWidth
 
 
-    def position(self, incrementX:int=0, incrementY:int=0):
+    def get_position(self, incrementX:int=0, incrementY:int=0):
         """
         Returns the position of the rocket
         """
         return self._position['x'] + incrementX, self._position['y'] + incrementY
     
 
-    def size(self):
+    def get_size(self):
         """
         Returns the size of the rocket
         """
         return self._skin.get_size()
 
 
-    def updateScreenSize(self, screenSize):
+    def set_screenSize(self, screenSize):
+        """
+        Set Screen Size
+        """
         self._position = {'x':screenSize[0]//2-self._skin.get_width()//2, 'y':screenSize[1]//2+self._skin.get_height()}
         self._limitWidth = screenSize[0] - self._skin. get_width()
         self._limitHeigth = screenSize[1] - self._skin.get_height()
 
 
-    def skin(self):
+    def get_skin(self):
         """
         Returns the skin of the rocket
         """
