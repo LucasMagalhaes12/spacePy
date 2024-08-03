@@ -6,8 +6,6 @@ Desenvolvi uma demo de jogo simples de nave espacial usando Python e Pygame, com
 
 Neste jogo, o jogador assume uma nave espacial encarregada de se defender contra ondas de inimigos, a mecânica principal envolve movimentar-se para evitar colisões e lançar projéteis às naves inimigas que se aproximam. Além disso, o jogo apresenta power-ups que oferecem vantagens temporárias, como melhorias na velocidade da nave e armas mais poderosas. Além das mecânicas de colisão e partículas, têm também sistema de tela cheia ou janela, resoluções de tela, idioma e outras funções.
 
-![Gameplay](res/spacepy.GIF)
-
 ## Para Executar o game:
 
 ### Linux ambiente virtual python:
@@ -26,3 +24,5 @@ Neste jogo, o jogador assume uma nave espacial encarregada de se defender contra
 
     # para desativar:
     deactivate
+
+![Gameplay](res/spacepy.GIF)
