@@ -42,12 +42,12 @@ def game():
     while runningGame:
         clock.tick(60)
         controls.update()
-        runningGame = not controls.keyStatus()["QUIT"]
+        runningGame = not controls.get_keyStatus()["QUIT"]
 
         lasers.update(rocket.get_position(incrementX=6, incrementY=35), rocket.get_position(45, 20), rocket.get_position(85, 35))
         enemys.update(window.get_resolution())
         particles.update()
-        rocket.update(controls.keyStatus())
+        rocket.update(controls.get_keyStatus())
         powerUps.update()
         lifes.update()
         
@@ -124,42 +124,42 @@ def configuration():
         controls.update()
         runningConfig = not controls._keys["QUIT"]
 
-        if controls.keyStatus("UP"):
+        if controls.get_keyStatus("UP"):
             selections.moveSelection("configuration", selections.PREVIUS)
             controls.setKey("UP", False)
 
-        elif controls.keyStatus("DOWN"):
+        elif controls.get_keyStatus("DOWN"):
             selections.moveSelection("configuration", selections.NEXT)
             controls.setKey("DOWN", False)
 
-        elif controls.keyStatus("LEFT") or controls.keyStatus("RIGHT"):
+        elif controls.get_keyStatus("LEFT") or controls.get_keyStatus("RIGHT"):
             if selections.get_pos("configuration") == 0:
-                if controls.keyStatus("LEFT"):
+                if controls.get_keyStatus("LEFT"):
                     selections.moveSelection("window", selections.PREVIUS)
                     controls.setKey("LEFT", False)
-                elif controls.keyStatus("RIGHT"):
+                elif controls.get_keyStatus("RIGHT"):
                     selections.moveSelection("window", selections.NEXT)
                     controls.setKey("RIGHT", False)
 
             elif selections.get_pos("configuration") == 1:
-                if controls.keyStatus("LEFT"):
+                if controls.get_keyStatus("LEFT"):
                     selections.moveSelection("resolutions", selections.PREVIUS)
                     controls.setKey("LEFT", False)
-                elif controls.keyStatus("RIGHT"):
+                elif controls.get_keyStatus("RIGHT"):
                     selections.moveSelection("resolutions", selections.NEXT)
                     controls.setKey("RIGHT", False)
 
             elif selections.get_pos("configuration") == 2:
-                if controls.keyStatus("LEFT"):
+                if controls.get_keyStatus("LEFT"):
                     selections.moveSelection("language", selections.PREVIUS)
                     controls.setKey("LEFT", False)
 
-                elif controls.keyStatus("RIGHT"):
+                elif controls.get_keyStatus("RIGHT"):
                     selections.moveSelection("language", selections.NEXT)
                     controls.setKey("RIGHT", False)
 
 
-        if controls.keyStatus("ACTION"):
+        if controls.get_keyStatus("ACTION"):
             if selections.get_pos("configuration") == 3:
                 window.updateResolution(screen, selections.get_pos("resolutions"), not selections.get_pos("window"))
                 rocket.set_screenSize(window.get_resolution())

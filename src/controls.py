@@ -24,7 +24,7 @@ class Controls():
                         self._keys[keyPressed] = False
 
 
-    def keyStatus(self, key:str="ALL"):
+    def get_keyStatus(self, key:str="ALL"):
         """
         Return state Key in a dictionary:
         key = UP, DOWN, LEFT, RIGHT, ACTION, QUIT or ALL(Return all keys)
