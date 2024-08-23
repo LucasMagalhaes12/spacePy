@@ -1,6 +1,6 @@
 # SpacePy
 
-## Introdução
+## Introdução:
 
 Desenvolvi uma demo de jogo simples de nave espacial usando Python e Pygame, com o propósito principal de explorar e aprender mecânicas básicas de desenvolvimento de jogos, sem o uso de uma engine.
 
