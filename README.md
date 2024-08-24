@@ -10,8 +10,7 @@ Neste jogo, o jogador assume uma nave espacial encarregada de se defender contra
 
 ## Para Executar o game:
 
-### Linux ambiente virtual python:
-
+### Configurando um ambiente virtual python no linux:
     # Instalar a venv python:
     sudo apt install python3-venv
     
@@ -20,9 +19,19 @@ Neste jogo, o jogador assume uma nave espacial encarregada de se defender contra
     
     # para ativar:
     source venv/bin/activate
-
-    # Instalar a biblioteca pygame:
-    pip3 install pygame
-
+    
     # para desativar:
     deactivate
+
+### Instalando biblioteca pygame:
+    # OBS: ative o ambiente virtual, caso queira utilizar ele
+    # Instale a biblioteca pygame através do pip3
+    pip3 install pygame
+
+### Clone o repositório:
+    # Clonar:
+    git clone https://github.com/LucasMagalhaes12/spacePy.git
+
+### Executar Game:
+    Dentro da pasta spacePy e com o ambiente venv ativado ou com a biblioteca pygame instalada:
+    python3 src/main.py
