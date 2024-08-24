@@ -33,5 +33,5 @@ Neste jogo, o jogador assume uma nave espacial encarregada de se defender contra
     git clone https://github.com/LucasMagalhaes12/spacePy.git
 
 ### Executar Game:
-    Dentro da pasta spacePy e com o ambiente venv ativado ou com a biblioteca pygame instalada:
+    Dentro da pasta spacePy e com o ambiente venv ativado ou com a biblioteca pygame instalada no python global do seu sistema:
     python3 src/main.py
