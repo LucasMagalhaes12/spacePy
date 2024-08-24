@@ -29,7 +29,7 @@ Neste jogo, o jogador assume uma nave espacial encarregada de se defender contra
     pip3 install pygame
 
 ### Clone o repositório:
-    # Clonar:
+    # Clone o repositório:
     git clone https://github.com/LucasMagalhaes12/spacePy.git
 
 ### Executar Game:
